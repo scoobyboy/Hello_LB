@@ -39,8 +39,8 @@ stages:
           workingDirectory: '$(System.DefaultWorkingDirectory)/tf_aks_mfests'
           allowTelemetryCollection: false   
 
-- stage: Plan and Apply
-  displayName: Plan and Apply
+- stage: Plan
+  displayName: Plan
   jobs:
   - job:
     pool:
