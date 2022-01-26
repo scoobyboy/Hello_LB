@@ -1,13 +1,17 @@
 terraform {
   required_providers {
     azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "=2.91.0"
+      source = "hashicorp/azurerm"
+      version = "=2.75.0"
     }
   }
 }
 
-# Configure the Microsoft Azure Provider
+terraform {
+  backend "azurerm" {
+  }
+}
+
 provider "azurerm" {
   features {}
 }
