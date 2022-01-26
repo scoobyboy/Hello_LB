@@ -75,7 +75,4 @@ linux_profile {
     load_balancer_sku = "Standard"
    }
 
-   tags = {
-    Environment = "dev"
-   }
 
