@@ -36,7 +36,7 @@ stages:
           backendAzureRmContainerName: 'hw-container'
           backendAzureRmKey: 'aks-base.tfstate'
           allowTelemetryCollection: false
-      - task: TerraformCLI@0
+      - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
         displayName: Terraform Validate
         inputs:
           command: 'validate'
