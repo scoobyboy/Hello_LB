@@ -4,6 +4,10 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+- name: DEV_ENVIRONMENT
+  value: dev
+
 stages:
 - stage: TerraformValidate
   jobs:
@@ -20,7 +24,7 @@ stages:
         displayName: Terraform Install
         inputs:
           terraformVersion: 'latest'
-      - task: TerraformCLI@0
+      - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
         displayName: Terraform Init
         inputs:
           command: 'init'
@@ -39,18 +43,22 @@ stages:
           workingDirectory: '$(System.DefaultWorkingDirectory)/tf_aks_mfests'
           allowTelemetryCollection: false   
 
-- stage: Plan
-  displayName: Plan
+- stage: DeployAKSClusters
   jobs:
-  - job:
+  - deployment: DeployDevAKSCluster
+    displayName: DeployDevAKSCluster
     pool:
-        vmImage: 'ubuntu-latest'      
-        Steps:        
+        vmImage: 'ubuntu-latest'
+    environment: $(DEV_ENVIRONMENT)       
+    strategy:
+        runOnce:
+          deploy:
+            steps: 
             - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
               displayName: Terraform Init
               inputs:
                 command: 'init'
-                workingDirectory: '$(Pipeline.Workspace)/Terraform'
+                workingDirectory: '$(Pipeline.Workspace)/tf_aks_mfests'
                 backendType: 'azurerm'
                 backendServiceArm: 'terraform-aks-azurerm-svc-con'
                 backendAzureRmResourceGroupName: 'HW_aks_Storage'
