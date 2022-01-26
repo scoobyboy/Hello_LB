@@ -8,16 +8,6 @@ variables:
 - name: DEV_ENVIRONMENT
   value: dev
 
-resources:
-  repositories:
-    - repository: myLibraries
-      type: github
-      name: scoobyboy/Hello_LB
-
-steps:
-- checkout: self
-- checkout: myLibraries
-  path: scoobyboy/Hello_LB
 
 stages:
 - stage: TerraformValidate
