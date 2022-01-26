@@ -11,10 +11,10 @@ variable "res_group_name" {
 }
 
 # Azure AKS Environment Name
-variable "environment" {
- type = string  
-  description = "This variable defines the Environment"  
-  default = "hw-prod01"
+#variable "environment" {
+ #type = string  
+  #description = "This variable defines the Environment"  
+  #default = "hw-prod01"
 
 
   # SSH Public Key for Linux VMs
