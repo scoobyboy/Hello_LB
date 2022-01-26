@@ -54,7 +54,7 @@ stages:
               displayName: Terraform Init
               inputs:
                 command: 'init'
-                workingDirectory: '$(Pipeline.Workspace)/tf_aks_mfests'
+                workingDirectory: '$(Pipeline.Workspace)/Terraform'
                 backendType: 'azurerm'
                 backendServiceArm: 'terraform-aks-azurerm-svc-con'
                 backendAzureRmResourceGroupName: 'HW_aks_Storage'
@@ -73,7 +73,7 @@ stages:
               displayName: Terraform Apply
               inputs:
                 command: 'apply'
-                workingDirectory: '$(Pipeline.Workspace)/tf_aks_mfestst'
+                workingDirectory: '$(Pipeline.Workspace)/Terraform'
                 environmentServiceName: 'terraform-aks-azurerm-svc-con'
                 commandOptions: '$(Pipeline.Workspace)/tf_aks_mfests/$(environment: $(DEV_ENVIRONMENT))-$(Build.BuildId).out'
                 allowTelemetryCollection: false
