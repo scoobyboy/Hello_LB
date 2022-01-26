@@ -18,7 +18,7 @@ stages:
       - task: PublishPipelineArtifact@1
         displayName: Publish Artifacts
         inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)/tf_aks_mfests'
+          targetPath: '$(System.DefaultWorkingDirectory)/Hello_LB/tf_aks_mfests'
           artifact: 'tf_aks_mfests-out'
           publishLocation: 'pipeline'
       - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
@@ -29,7 +29,7 @@ stages:
         displayName: Terraform Init
         inputs:
           command: 'init'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/tf_aks_mfests'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/Hello_LB/tf_aks_mfests'
           backendType: 'azurerm'
           backendServiceArm: 'terraform-aks-azurerm-svc-con'
           backendAzureRmResourceGroupName: 'HW_aks_Storage'
@@ -41,7 +41,7 @@ stages:
         displayName: Terraform Validate
         inputs:
           command: 'validate'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/tf_aks_mfests'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/Hello_LB/tf_aks_mfests'
           allowTelemetryCollection: false   
 
 - stage: DeployAKSClusters
@@ -59,7 +59,7 @@ stages:
               displayName: Terraform Init
               inputs:
                 command: 'init'
-                workingDirectory: '$(Pipeline.Workspace)/tf_aks_mfests'
+                workingDirectory: '$(Pipeline.Workspace)/Hello_LB/tf_aks_mfests'
                 backendType: 'azurerm'
                 backendServiceArm: 'terraform-aks-azurerm-svc-con'
                 backendAzureRmResourceGroupName: 'HW_aks_Storage'
@@ -70,9 +70,9 @@ stages:
               displayName: Terraform Plan
               inputs:
                 command: 'plan'
-                workingDirectory: '$(Pipeline.Workspace)/tf_aks_mfests'
+                workingDirectory: '$(Pipeline.Workspace)/Hello_LB/tf_aks_mfests'
                 environmentServiceName: 'terraform-aks-azurerm-svc-con'
-                commandOptions: ' -var environment=$(DEV_ENVIRONMENT) -out $(Pipeline.Workspace)/tf_aks_mfests/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
+                commandOptions: ' -var environment=$(DEV_ENVIRONMENT) -out $(Pipeline.Workspace)/Hello_LB/tf_aks_mfests/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
                 allowTelemetryCollection: false
             - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
               displayName: Terraform Apply
@@ -80,5 +80,5 @@ stages:
                 command: 'apply'
                 workingDirectory: '$(Pipeline.Workspace)/tf_aks_mfests'
                 environmentServiceName: 'terraform-aks-azurerm-svc-con'
-                commandOptions: '$(Pipeline.Workspace)/tf_aks_mfests/$(environment: $(DEV_ENVIRONMENT))-$(Build.BuildId).out'
+                commandOptions: '$(Pipeline.Workspace)/Hello_LB/tf_aks_mfests/$(environment: $(DEV_ENVIRONMENT))-$(Build.BuildId).out'
                 allowTelemetryCollection: false
