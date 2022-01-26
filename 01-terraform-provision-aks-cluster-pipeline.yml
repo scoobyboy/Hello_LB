@@ -73,7 +73,7 @@ stages:
               displayName: Terraform Apply
               inputs:
                 command: 'apply'
-                workingDirectory: '$(Pipeline.Workspace)/tf_aks_mfestst'
+                workingDirectory: '$(Pipeline.Workspace)/tf_aks_mfests'
                 environmentServiceName: 'terraform-aks-azurerm-svc-con'
                 commandOptions: '$(Pipeline.Workspace)/tf_aks_mfests/$(environment: $(DEV_ENVIRONMENT))-$(Build.BuildId).out'
                 allowTelemetryCollection: false
