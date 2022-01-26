@@ -73,5 +73,6 @@ linux_profile {
     network_plugin = "azure"
     load_balancer_sku = "Standard"
    }
+}
 
 
