@@ -4,6 +4,11 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+- name: DEV_ENVIRONMENT
+  value: dev
+
+
 stages:
 - stage: TerraformValidate
   jobs:
@@ -20,7 +25,7 @@ stages:
         displayName: Terraform Install
         inputs:
           terraformVersion: 'latest'
-      - task: TerraformCLI@0
+      - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
         displayName: Terraform Init
         inputs:
           command: 'init'
@@ -32,7 +37,7 @@ stages:
           backendAzureRmContainerName: 'hw-container'
           backendAzureRmKey: 'aks-base.tfstate'
           allowTelemetryCollection: false
-      - task: TerraformCLI@0
+      - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
         displayName: Terraform Validate
         inputs:
           command: 'validate'
@@ -41,39 +46,39 @@ stages:
 
 - stage: DeployAKSClusters
   jobs:
-    - deployment: DeployDevAKSCluster
-      displayName: DeployDevAKSCluster
-      pool:
-        vmImage: 'ubuntu-latest'      
-      environment: $(DEV_ENVIRONMENT)  
-      strategy:
+  - deployment: DeployDevAKSCluster
+    displayName: DeployDevAKSCluster
+    pool:
+        vmImage: 'ubuntu-latest'
+    environment: $(DEV_ENVIRONMENT)       
+    strategy:
         runOnce:
           deploy:
-            steps:            
+            steps: 
             - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
               displayName: Terraform Init
               inputs:
                 command: 'init'
-                workingDirectory: '$(Pipeline.Workspace)/Terraform'
+                workingDirectory: '$(Pipeline.Workspace)/tf_aks_mfests-out'
                 backendType: 'azurerm'
                 backendServiceArm: 'terraform-aks-azurerm-svc-con'
                 backendAzureRmResourceGroupName: 'HW_aks_Storage'
                 backendAzureRmStorageAccountName: 'hw123'
                 backendAzureRmContainerName: 'hw-container'
                 allowTelemetryCollection: false
-            - task: TerraformCLI@0
+            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
               displayName: Terraform Plan
               inputs:
                 command: 'plan'
-                workingDirectory: '$(Pipeline.Workspace)/tf_aks_mfests'
+                workingDirectory: '$(Pipeline.Workspace)/tf_aks_mfests-out'
                 environmentServiceName: 'terraform-aks-azurerm-svc-con'
-                commandOptions: ' -var environment=$(DEV_ENVIRONMENT) -out $(Pipeline.Workspace)/tf_aks_mfests/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
+                commandOptions: ' -var environment=$(DEV_ENVIRONMENT) -out $(Pipeline.Workspace)/tf_aks_mfests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
                 allowTelemetryCollection: false
-            - task: TerraformCLI@0
+            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
               displayName: Terraform Apply
               inputs:
                 command: 'apply'
-                workingDirectory: '$(Pipeline.Workspace)/Terraform'
+                workingDirectory: '$(Pipeline.Workspace)/tf_aks_mfests-out'
                 environmentServiceName: 'terraform-aks-azurerm-svc-con'
-                commandOptions: '$(Pipeline.Workspace)/tf_aks_mfests/$(environment: $(DEV_ENVIRONMENT))-$(Build.BuildId).out'
+                commandOptions: '$(Pipeline.Workspace)/tf_aks_mfests-out/$ $(DEV_ENVIRONMENT))-$(Build.BuildId).out'
                 allowTelemetryCollection: false
