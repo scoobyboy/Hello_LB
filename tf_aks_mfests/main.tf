@@ -10,7 +10,11 @@ terraform {
       version = "~> 2.0"
      }
   }
-} 
+# Terraform State Storage to Azure Storage Container
+  backend "azurerm" {
+  
+  }  
+}
 
 # 2. Terraform Provider Block for AzureRM
 provider "azurerm" {
